@@ -1,25 +1,22 @@
-package academy.mate;
-
+package main;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import servlets.AllRequestsServlet;
 
-public class App {
+public class Main {
 
     public static void main( String[] args ) throws Exception {
 
-        Server server = new Server(9090);
-
+        AllRequestsServlet allRequestsServlet = new AllRequestsServlet();
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addServlet(new ServletHolder(allRequestsServlet), "/*");
+
+        Server server = new Server(8080);
         server.setHandler(context);
-        context.addServlet(new ServletHolder(), "/authform");
+
         server.start();
         server.join();
-
-
-
-
-
     }
 }
