@@ -30,9 +30,7 @@ public class PageGenerator {
     }
 
     public String getPage(String filename, Map<String, Object> data){
-
         Writer stream = new StringWriter();
-
         Template template = null;
         try {
             template = cfg.getTemplate(HTML_DIR + File.separator + filename);
