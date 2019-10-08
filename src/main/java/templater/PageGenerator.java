@@ -21,7 +21,6 @@ public class PageGenerator {
         cfg = new Configuration();
     }
 
-
     public static PageGenerator instance(){
         if(pageGenerator == null){
             pageGenerator = new PageGenerator();
@@ -30,9 +29,7 @@ public class PageGenerator {
     }
 
     public String getPage(String filename, Map<String, Object> data){
-
         Writer stream = new StringWriter();
-
         Template template = null;
         try {
             template = cfg.getTemplate(HTML_DIR + File.separator + filename);
@@ -40,12 +37,6 @@ public class PageGenerator {
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
-
         return stream.toString();
-
-
     }
-
-
-
 }

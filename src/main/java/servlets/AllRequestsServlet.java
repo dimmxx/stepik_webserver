@@ -15,7 +15,6 @@ public class AllRequestsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
         Map<String, Object> pageVariables = createPageVariablesMap(request);
         pageVariables.put("message", "");
 
@@ -47,7 +46,8 @@ public class AllRequestsServlet extends HttpServlet {
         pageVariables.put("URL", request.getRequestURL());
         pageVariables.put("URI", request.getRequestURI());
         pageVariables.put("pathInfo", request.getPathInfo());
-        pageVariables.put("sessionId", request.getSession());
+        pageVariables.put("session", request.getSession());
+        pageVariables.put("sessionId", request.getSession().getId());
         pageVariables.put("parameters", request.getParameterMap().toString());
         return pageVariables;
     }
