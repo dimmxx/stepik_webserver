@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Properties>
+        <Property name="basePath">src/main/resources/log</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+<!--        <RollingFile name="File" fileName="${basePath}/app-info.log"-->
+<!--                     filePattern="${basePath}/app-info-%d{yyyy-MM-dd-HH-mm-ss}.log">-->
+<!--            &lt;!&ndash;            <LevelRangeFilter minLevel="error" maxLevel="trace" onMatch="ACCEPT" onMismatch="DENY"/>&ndash;&gt;-->
+<!--            <PatternLayout>-->
+<!--                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%c{1}] [%M] - %msg%n</pattern>-->
+<!--            </PatternLayout>-->
+<!--            <Policies>-->
+<!--                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+<!--            </Policies>-->
+<!--        </RollingFile>-->
+
+        <File name="SimpleFile" fileName="${basePath}/webserver.log" append="false">
+            <PatternLayout>
+                <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+
+
+    </Appenders>
+
+    <Loggers>
+        <!--        <Logger name="conspect.logging.log1.Printer" level="trace" additivity="false">-->
+        <!--            <AppenderRef ref="File"/>-->
+        <!--        </Logger>-->
+
+        <Root level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+            <!--            <AppenderRef ref="File"/>-->
+            <AppenderRef ref="SimpleFile"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
