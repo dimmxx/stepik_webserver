@@ -20,7 +20,7 @@ public class SessionsServlet extends HttpServlet {
 
     public SessionsServlet(AccountService accountService) {
         this.accountService = accountService;
-        logger.debug("SessionsServlet constructor - accountService initialized");
+        logger.debug("SessionsServlet constructor - accountService is passed to SessionServlet");
     }
 
     @Override
@@ -35,38 +35,27 @@ public class SessionsServlet extends HttpServlet {
         String login = req.getParameter("login");
         String pass = req.getParameter("pass");
 
-        if (login.equals("admin")) {
+        if (login == null) {
             resp.setContentType("text/html;charset=utf-8");
-            //resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().println(resp.getStatus());
-            resp.getWriter().println("hello");
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("Status code: " + resp.getStatus());
+            return;
+        }
 
+        UserProfile profile = accountService.getUserByLogin(login);
 
-            UserProfile profile = accountService.getUserByLogin(login);
-            accountService.addSession(req.getSession().getId(), profile);
-            Gson gson = new Gson();
+        if (profile == null || !profile.getPass().equals(pass)) {
+            resp.setContentType("text/html;charset=utf-8");
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().println("Status code: " + resp.getStatus());
+            return;
+        }
+
+        accountService.addSession(req.getSession().getId(), profile);
+        Gson gson = new Gson();
         String json = gson.toJson(profile);
         resp.setContentType("text/html;charset=utf-8");
         resp.getWriter().println(json);
-        resp.setStatus(400);
-
-           // return;
-        }
-
-      //  UserProfile profile = accountService.getUserByLogin(login);
-//        if (profile == null || !profile.getPass().equals(pass)) {
-//            resp.setContentType("text/html;charset=utf-8");
-//            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            return;
-//        }
-
-      //  accountService.addSession(req.getSession().getId(), profile);
-//        Gson gson = new Gson();
-//        String json = gson.toJson(profile);
-//        resp.setContentType("text/html;charset=utf-8");
-//        resp.getWriter().println(json);
-//        resp.setStatus(HttpServletResponse.SC_OK);
-//
-
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }

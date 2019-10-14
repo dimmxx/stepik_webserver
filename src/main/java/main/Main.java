@@ -39,8 +39,9 @@ public class Main {
         server.setHandler(handlers);
 
         server.start();
+        logger.debug("server is started");
         server.join();
-
+        logger.debug("server is joined");
 
 
     }
