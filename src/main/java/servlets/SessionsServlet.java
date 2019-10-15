@@ -26,6 +26,20 @@ public class SessionsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.debug("entered doGet method");
+        String sessionId = req.getSession().getId();
+        UserProfile profile = accountService.getUserBySessionId(sessionId);
+
+        if (profile == null) {
+            resp.setContentType("text/html;charset=utf-8");
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().println("Status code: " + resp.getStatus());
+        } else {
+            Gson gson = new Gson();
+            String json = gson.toJson(profile);
+            resp.setContentType("text/html;charset=utf-8");
+            resp.getWriter().println(json);
+            resp.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 
     @Override
@@ -57,5 +71,21 @@ public class SessionsServlet extends HttpServlet {
         resp.setContentType("text/html;charset=utf-8");
         resp.getWriter().println(json);
         resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.debug("entered doDelete method");
+        String sessionId = request.getSession().getId();
+        UserProfile profile = accountService.getUserBySessionId(sessionId);
+        if (profile == null) {
+            response.setContentType("text/html;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            accountService.deleteSession(sessionId);
+            response.setContentType("text/html;charset=utf-8");
+            response.getWriter().println("Goodbye!");
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 }
