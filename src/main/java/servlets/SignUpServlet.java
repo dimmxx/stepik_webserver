@@ -11,11 +11,11 @@ import java.io.IOException;
 
 public class SignUpServlet extends HttpServlet {
 
-    private final AccountService accountService;
+    private final AccountService accountService = null;
 
-    public SignUpServlet(AccountService accountService){
-        this.accountService = accountService;
-    }
+//    public SignUpServlet(AccountService accountService){
+//        this.accountService = accountService;
+//    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
