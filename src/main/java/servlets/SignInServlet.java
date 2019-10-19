@@ -1,6 +1,7 @@
 package servlets;
 
 import accounts.AccountService;
+import accounts.InitAccountService;
 import accounts.UserProfile;
 
 import javax.servlet.ServletException;
@@ -11,13 +12,8 @@ import java.io.IOException;
 
 public class SignInServlet extends HttpServlet {
 
-    private final AccountService accountService;
+    private final AccountService accountService = InitAccountService.getAccountService();
 
-    public SignInServlet(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
-    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
