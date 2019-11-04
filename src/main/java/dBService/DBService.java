@@ -1,8 +1,11 @@
 package dBService;
 
+import dBService.dao.UsersDAO;
 import org.h2.jdbcx.JdbcDataSource;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -10,39 +13,78 @@ public class DBService {
 
     private final Connection connection;
 
-    public DBService(){
-        this.connection = getH2Connection();
+    public DBService() {
+        //this.connection = getH2Connection();
+        this.connection = getMySQLConnection();
     }
 
+    public void addUser(String name) throws DBException {
+        try {
+            connection.setAutoCommit(false);
+            UsersDAO dao = new UsersDAO(connection);
+            dao.createTable();
+            dao.insertUser(name);
+            connection.commit();
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ignore) {
 
-    public long addUser(String name){
-
-        return 0;
+            }
+            throw new DBException(e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ignore) {
+            }
+        }
     }
-
-
-
-
-
-
-
 
     public void printConnectionInfo() {
-        try{
-            System.out.println(connection.getMetaData().getDatabaseProductName());
-            System.out.println(connection.getMetaData().getDatabaseProductVersion());
-            System.out.println(connection.getMetaData().getDriverName());
-            System.out.println(connection.getAutoCommit());
+        try {
+            System.out.println("DatabaseProductName: " + connection.getMetaData().getDatabaseProductName());
+            System.out.println("DataBaseProductVersion: " + connection.getMetaData().getDatabaseProductVersion());
+            System.out.println("DriverName: " + connection.getMetaData().getDriverName());
+            System.out.println("URL: " + connection.getMetaData().getURL());
+            System.out.println("AutoCommit: " + connection.getAutoCommit());
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    public static Connection getH2Connection(){
+    public static Connection getMySQLConnection() {
 
-        try{
+        String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+        String DB_TYPE = "jdbc:mysql://";
+        String HOST_NAME = "13.58.87.188"; //aws streamddata0719@gmail.com
+        String PORT = "3306";
+        String DB_NAME = "testdb";
+        String USER = "root";
+        String PASS = "root";
+
+        try {
+            DriverManager.registerDriver((Driver) Class.forName(JDBC_DRIVER).getDeclaredConstructor().newInstance());
+            StringBuilder urlString = new StringBuilder();
+            urlString.
+                    append(DB_TYPE).
+                    append(HOST_NAME + ":").
+                    append(PORT + "/").
+                    append(DB_NAME + "?").
+                    append("user=" + USER + "&").
+                    append("password=" + PASS + "&useSSL=false");
+
+            Connection connection = DriverManager.getConnection(urlString.toString());
+            return connection;
+        } catch (SQLException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Connection getH2Connection() {
+
+        try {
             String url = "jdbc:h2:./h2db";
             String name = "tully";
             String pass = "tully";
@@ -55,10 +97,20 @@ public class DBService {
             //Connection connection = DriverManager.getConnection(url, name, pass);
             return ds.getConnection();
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public void closeConnection(){
+        try {
+            connection.close();
+            System.out.println("Connection is closed");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

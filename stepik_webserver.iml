@@ -27,5 +27,6 @@
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.12.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.6" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.200" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.48" level="project" />
   </component>
 </module>
