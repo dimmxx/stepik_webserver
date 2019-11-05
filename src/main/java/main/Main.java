@@ -14,7 +14,9 @@ public class Main {
         DBService dbService = new DBService();
         dbService.printConnectionInfo();
 
-        System.out.println(dbService.addUser("Mary"));
+        //dbService.addUser("Linda");
+
+        System.out.println(dbService.getAllUsers());
 
 
 

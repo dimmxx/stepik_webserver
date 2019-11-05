@@ -1,6 +1,7 @@
 package dBService;
 
 import dBService.dao.UsersDAO;
+import dBService.dataSets.UsersDataSet;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +9,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBService {
 
@@ -17,6 +20,24 @@ public class DBService {
         //this.connection = getH2Connection();
         this.connection = getMySQLConnection();
     }
+
+    public UsersDataSet getUser(long id) throws DBException, SQLException {
+        UsersDataSet usersDataSet = new UsersDAO(connection).getUserDataSet(id);
+        return usersDataSet;
+    }
+
+    public List<UsersDataSet> getAllUsers() throws SQLException{
+        List<UsersDataSet> list = new ArrayList<>();
+        list = new UsersDAO(connection).getAllUsersLambda();
+        return list;
+    }
+
+
+
+
+
+
+
 
     public int addUser(String name) throws DBException {
         try {
@@ -58,11 +79,11 @@ public class DBService {
 
         String JDBC_DRIVER = "com.mysql.jdbc.Driver";
         String DB_TYPE = "jdbc:mysql://";
-        String HOST_NAME = "13.58.87.188"; //aws streamddata0719@gmail.com
+        String HOST_NAME = "3.133.58.254"; //aws streamddata0719@gmail.com
         String PORT = "3306";
         String DB_NAME = "testdb";
-        String USER = "root";
-        String PASS = "root";
+        String USER = "remote_user";
+        String PASS = "remote_user";
 
         try {
             DriverManager.registerDriver((Driver) Class.forName(JDBC_DRIVER).getDeclaredConstructor().newInstance());
