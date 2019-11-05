@@ -14,7 +14,11 @@ public class Main {
         DBService dbService = new DBService();
         dbService.printConnectionInfo();
 
-        dbService.addUser("John");
+        System.out.println(dbService.addUser("Mary"));
+
+
+
+
         dbService.closeConnection();
 
 

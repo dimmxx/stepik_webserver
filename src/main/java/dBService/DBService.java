@@ -18,13 +18,14 @@ public class DBService {
         this.connection = getMySQLConnection();
     }
 
-    public void addUser(String name) throws DBException {
+    public int addUser(String name) throws DBException {
         try {
             connection.setAutoCommit(false);
             UsersDAO dao = new UsersDAO(connection);
             dao.createTable();
-            dao.insertUser(name);
+            int affectedRows = dao.insertUser(name);
             connection.commit();
+            return affectedRows;
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -102,7 +103,6 @@ public class DBService {
         }
         return null;
     }
-
 
     public void closeConnection(){
         try {
