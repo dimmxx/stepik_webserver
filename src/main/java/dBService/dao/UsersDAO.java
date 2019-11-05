@@ -3,6 +3,7 @@ package dBService.dao;
 import dBService.dataSets.UsersDataSet;
 import dBService.executor.Executor;
 import dBService.executor.ResultHandler;
+import dBService.executor.ResultHandlerImpl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,6 +45,18 @@ public class UsersDAO {
             return new UsersDataSet(result.getLong("id"), result.getString("user_name"));
         });
     }
+
+    public <T> T getUserDataSetLegacy(long id) throws SQLException{
+        String query = "select * from users where id=" + id;
+        ResultHandlerImpl <UsersDataSet> resultHandler = new ResultHandlerImpl();
+
+        return executor.execQuery(query, resultHandler);
+    }
+
+
+
+
+
 
     public List<UsersDataSet> getAllUsers() throws SQLException{
         String query = "select * from users";

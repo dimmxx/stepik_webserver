@@ -32,13 +32,6 @@ public class DBService {
         return list;
     }
 
-
-
-
-
-
-
-
     public int addUser(String name) throws DBException {
         try {
             connection.setAutoCommit(false);
