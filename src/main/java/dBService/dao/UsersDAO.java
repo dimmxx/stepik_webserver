@@ -19,6 +19,10 @@ public class UsersDAO {
         this.executor = new Executor(connection);
     }
 
+    public void createDataBase() throws SQLException {
+        executor.execUpdate("create database if not exists testdb");
+    }
+
     public void createTable() throws SQLException {
         executor.execUpdate("create table if not exists users (id bigint auto_increment, user_name varchar(256), primary key (id))");
     }
@@ -46,17 +50,12 @@ public class UsersDAO {
         });
     }
 
-    public <T> T getUserDataSetLegacy(long id) throws SQLException{
+    public UsersDataSet getUserDataSetLegacy(long id) throws SQLException{
         String query = "select * from users where id=" + id;
         ResultHandlerImpl <UsersDataSet> resultHandler = new ResultHandlerImpl();
-
-        return executor.execQuery(query, resultHandler);
+        UsersDataSet usersDataSet = (UsersDataSet) executor.execQuery(query, resultHandler);
+        return usersDataSet;
     }
-
-
-
-
-
 
     public List<UsersDataSet> getAllUsers() throws SQLException{
         String query = "select * from users";

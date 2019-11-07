@@ -22,13 +22,13 @@ public class DBService {
     }
 
     public UsersDataSet getUser(long id) throws DBException, SQLException {
-        UsersDataSet usersDataSet = new UsersDAO(connection).getUserDataSet(id);
+        UsersDataSet usersDataSet = new UsersDAO(connection).getUserDataSetLegacy(id);
         return usersDataSet;
     }
 
     public List<UsersDataSet> getAllUsers() throws SQLException{
         List<UsersDataSet> list = new ArrayList<>();
-        list = new UsersDAO(connection).getAllUsersLambda();
+        list = new UsersDAO(connection).getAllUsers();
         return list;
     }
 
@@ -36,6 +36,7 @@ public class DBService {
         try {
             connection.setAutoCommit(false);
             UsersDAO dao = new UsersDAO(connection);
+            dao.createDataBase();
             dao.createTable();
             int affectedRows = dao.insertUser(name);
             connection.commit();
