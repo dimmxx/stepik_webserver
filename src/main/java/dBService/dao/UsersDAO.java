@@ -4,6 +4,7 @@ import dBService.dataSets.UsersDataSet;
 import dBService.executor.Executor;
 import dBService.executor.ResultHandler;
 import dBService.executor.ResultHandlerImpl;
+import dBService.executor.ResultHandlerImplForGetUserIdByName;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -27,9 +28,36 @@ public class UsersDAO {
         executor.execUpdate("create table if not exists users (id bigint auto_increment, user_name varchar(256), primary key (id))");
     }
 
-    public int insertUser(String name) throws SQLException{
-        return executor.execUpdate("insert into users (user_name) values ('" + name + "')");
+    public void insertUser(String name) throws SQLException{
+        executor.execUpdate("insert into users (user_name) values ('" + name + "')");
     }
+
+    public long getUserIdByName(String name) throws SQLException{
+        String query = "select id from users where user_name='" + name +  "'";
+        Long id = executor.execQuery(query, new ResultHandler<Long>() {
+            @Override
+            public Long handle(ResultSet resultSet) throws SQLException {
+                if(!resultSet.isLast()) {
+                    resultSet.next();
+                    return resultSet.getLong(1);
+                }else return 0L;
+            }
+        });
+        System.out.println(id);
+        return id;
+    }
+
+    public long getUserIdByNameLegacy(String name) throws SQLException{
+        String query = "select id from users where user_name='" + name +  "'";
+        ResultHandlerImplForGetUserIdByName resultHandler = new ResultHandlerImplForGetUserIdByName();
+        return executor.execQueryLegacy(query, resultHandler);
+    }
+
+
+
+
+
+
 
     public UsersDataSet getUserDataSet(long id) throws SQLException{
         String query = "select * from users where id=" + id;
@@ -41,6 +69,12 @@ public class UsersDAO {
             }
         });
     }
+
+
+
+
+
+
 
     public UsersDataSet getUserDataSetLamda(long id) throws SQLException{
         String query = "select * from users where id=" + id;
@@ -72,7 +106,6 @@ public class UsersDAO {
         });
     }
 
-
     public List<UsersDataSet> getAllUsersLambda() throws SQLException{
         String query = "select * from users";
         return executor.execQuery(query, resultSet ->  {
@@ -84,9 +117,4 @@ public class UsersDAO {
                 return list;
         });
     }
-
-
-
-
-
 }

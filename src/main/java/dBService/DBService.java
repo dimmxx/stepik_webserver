@@ -21,26 +21,29 @@ public class DBService {
         this.connection = getMySQLConnection();
     }
 
-    public UsersDataSet getUser(long id) throws DBException, SQLException {
-        UsersDataSet usersDataSet = new UsersDAO(connection).getUserDataSetLegacy(id);
+    public UsersDataSet getUsersDataSet(long id) throws DBException, SQLException {
+        UsersDataSet usersDataSet = new UsersDAO(connection).getUserDataSet(id);
         return usersDataSet;
     }
 
-    public List<UsersDataSet> getAllUsers() throws SQLException{
+    public List<UsersDataSet> getAllUsersDataSet() throws SQLException{
         List<UsersDataSet> list = new ArrayList<>();
         list = new UsersDAO(connection).getAllUsers();
         return list;
     }
 
-    public int addUser(String name) throws DBException {
+    public long addUser(String name) throws DBException {
         try {
             connection.setAutoCommit(false);
             UsersDAO dao = new UsersDAO(connection);
             dao.createDataBase();
             dao.createTable();
-            int affectedRows = dao.insertUser(name);
+            dao.insertUser(name);
             connection.commit();
-            return affectedRows;
+
+
+
+            return 0;
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -54,6 +57,10 @@ public class DBService {
             } catch (SQLException ignore) {
             }
         }
+    }
+
+    public long getUserIdByName(String name) throws DBException, SQLException{
+        return new UsersDAO(connection).getUserIdByNameLegacy(name);
     }
 
     public void printConnectionInfo() {

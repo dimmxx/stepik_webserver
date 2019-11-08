@@ -13,12 +13,10 @@ public class Executor {
         this.connection = connection;
     }
 
-    public int execUpdate(String update) throws SQLException {
+    public void execUpdate(String update) throws SQLException {
         Statement statement = connection.createStatement();
         statement.execute(update);
-        int affectedRows = statement.getUpdateCount();
-
-        return affectedRows;
+        statement.close();
     }
 
     public <T> T execQuery(String query, ResultHandler<T> handler) throws SQLException{
@@ -30,6 +28,20 @@ public class Executor {
         statement.close();
         return value;
     }
+
+    public long execQueryLegacy(String query, ResultHandlerImplForGetUserIdByName handler) throws SQLException{
+        Statement statement = connection.createStatement();
+        statement.execute(query);
+        ResultSet resultSet = statement.getResultSet();
+        long value = handler.handle(resultSet);
+        resultSet.close();
+        statement.close();
+        return value;
+    }
+
+
+
+
 
 
 }
