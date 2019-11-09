@@ -29,6 +29,9 @@ public class Executor {
         return value;
     }
 
+
+
+
     public long execQueryLegacy(String query, ResultHandlerImplForGetUserIdByName handler) throws SQLException{
         Statement statement = connection.createStatement();
         statement.execute(query);

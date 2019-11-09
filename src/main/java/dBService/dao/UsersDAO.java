@@ -28,38 +28,34 @@ public class UsersDAO {
         executor.execUpdate("create table if not exists users (id bigint auto_increment, user_name varchar(256), primary key (id))");
     }
 
-    public void insertUser(String name) throws SQLException{
+    public void insertUser(String name) throws SQLException {
         executor.execUpdate("insert into users (user_name) values ('" + name + "')");
     }
 
-    public long getUserIdByName(String name) throws SQLException{
-        String query = "select id from users where user_name='" + name +  "'";
+    public long getUserIdByName(String name) throws SQLException {
+        String query = "select id from users where user_name='" + name + "'";
         Long id = executor.execQuery(query, new ResultHandler<Long>() {
             @Override
             public Long handle(ResultSet resultSet) throws SQLException {
-                if(!resultSet.isLast()) {
-                    resultSet.next();
+                if (resultSet.next()) {
                     return resultSet.getLong(1);
-                }else return 0L;
+                } else return 0L;
             }
         });
-        System.out.println(id);
         return id;
     }
 
-    public long getUserIdByNameLegacy(String name) throws SQLException{
-        String query = "select id from users where user_name='" + name +  "'";
-        ResultHandlerImplForGetUserIdByName resultHandler = new ResultHandlerImplForGetUserIdByName();
-        return executor.execQueryLegacy(query, resultHandler);
+    public long getUserIdByNameLambda(String name) throws SQLException {
+        String query = "select id from users where user_name='" + name + "'";
+        Long id = executor.execQuery(query, resultSet -> {
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            } else return 0L;
+        });
+        return id;
     }
 
-
-
-
-
-
-
-    public UsersDataSet getUserDataSet(long id) throws SQLException{
+    public UsersDataSet getUserDataSet(long id) throws SQLException {
         String query = "select * from users where id=" + id;
         return executor.execQuery(query, new ResultHandler<UsersDataSet>() {
             @Override
@@ -71,12 +67,14 @@ public class UsersDAO {
     }
 
 
+    public long getUserIdByNameLegacy(String name) throws SQLException {
+        String query = "select id from users where user_name='" + name + "'";
+        ResultHandlerImplForGetUserIdByName resultHandler = new ResultHandlerImplForGetUserIdByName();
+        return executor.execQueryLegacy(query, resultHandler);
+    }
 
 
-
-
-
-    public UsersDataSet getUserDataSetLamda(long id) throws SQLException{
+    public UsersDataSet getUserDataSetLamda(long id) throws SQLException {
         String query = "select * from users where id=" + id;
         return executor.execQuery(query, result -> {
             result.next();
@@ -84,21 +82,20 @@ public class UsersDAO {
         });
     }
 
-    public UsersDataSet getUserDataSetLegacy(long id) throws SQLException{
+    public UsersDataSet getUserDataSetLegacy(long id) throws SQLException {
         String query = "select * from users where id=" + id;
-        ResultHandlerImpl <UsersDataSet> resultHandler = new ResultHandlerImpl();
+        ResultHandlerImpl<UsersDataSet> resultHandler = new ResultHandlerImpl();
         UsersDataSet usersDataSet = (UsersDataSet) executor.execQuery(query, resultHandler);
         return usersDataSet;
     }
 
-    public List<UsersDataSet> getAllUsers() throws SQLException{
+    public List<UsersDataSet> getAllUsers() throws SQLException {
         String query = "select * from users";
         return executor.execQuery(query, new ResultHandler<List<UsersDataSet>>() {
             @Override
             public List<UsersDataSet> handle(ResultSet resultSet) throws SQLException {
                 List<UsersDataSet> list = new ArrayList<>();
-                while (!resultSet.isLast()){
-                    resultSet.next();
+                while (resultSet.next()) {
                     list.add(new UsersDataSet(resultSet.getLong(1), resultSet.getString(2)));
                 }
                 return list;
@@ -106,15 +103,15 @@ public class UsersDAO {
         });
     }
 
-    public List<UsersDataSet> getAllUsersLambda() throws SQLException{
+    public List<UsersDataSet> getAllUsersLambda() throws SQLException {
         String query = "select * from users";
-        return executor.execQuery(query, resultSet ->  {
+        return executor.execQuery(query, resultSet -> {
             List<UsersDataSet> list = new ArrayList<>();
-                while (!resultSet.isLast()){
-                    resultSet.next();
-                    list.add(new UsersDataSet(resultSet.getLong(1), resultSet.getString(2)));
-                }
-                return list;
+            while (!resultSet.isLast()) {
+                resultSet.next();
+                list.add(new UsersDataSet(resultSet.getLong(1), resultSet.getString(2)));
+            }
+            return list;
         });
     }
 }

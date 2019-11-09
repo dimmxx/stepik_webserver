@@ -17,8 +17,8 @@ public class DBService {
     private final Connection connection;
 
     public DBService() {
-        //this.connection = getH2Connection();
-        this.connection = getMySQLConnection();
+        this.connection = getH2Connection();
+        //this.connection = getMySQLConnection();
     }
 
     public UsersDataSet getUsersDataSet(long id) throws DBException, SQLException {
@@ -36,14 +36,11 @@ public class DBService {
         try {
             connection.setAutoCommit(false);
             UsersDAO dao = new UsersDAO(connection);
-            dao.createDataBase();
+            //dao.createDataBase();
             dao.createTable();
             dao.insertUser(name);
             connection.commit();
-
-
-
-            return 0;
+            return getUserIdByName(name);
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -60,7 +57,7 @@ public class DBService {
     }
 
     public long getUserIdByName(String name) throws DBException, SQLException{
-        return new UsersDAO(connection).getUserIdByNameLegacy(name);
+        return new UsersDAO(connection).getUserIdByName(name);
     }
 
     public void printConnectionInfo() {
